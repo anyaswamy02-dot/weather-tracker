@@ -1,1 +1,1 @@
-How cold is Yosemite during winter, and are upcoming temperatures typical for that time of year
+The project answers the question "How cold is Yosemite during winter, and are upcoming temperatures typical for that time of year?" I built it because I wanted to see which place to go at what time of year. It uses Open-Meteo API, five years of historical temperatures, and a seven-day forecast.
