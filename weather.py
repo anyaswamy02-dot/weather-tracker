@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+import os
 from datetime import date
 
 # My camping location
@@ -82,6 +83,17 @@ def get_current_weather(lat, lon):
     }
     response = requests.get(url, params=params, timeout=120)
     return response.json()
+
+log_df.to_csv(
+    "daily_log.csv",
+    mode="a",
+    header=not os.path.isfile("daily_log.csv"),
+    index=False
+)
+log_file = "daily_log.csv"
+log_df.to_csv(log_file, mode="a", header=not os.path.isfile(log_file), index=False)
+print(f"Logged current temperature: {current_temp} degrees C at {current_time}")
+
 # Results
 print(f"Weather analysis for {LOCATION_NAME}")
 print("=" * 40)
