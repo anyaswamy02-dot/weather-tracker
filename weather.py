@@ -1,6 +1,6 @@
 import requests
-import pandas as pd
 import os
+import pandas as pd
 from datetime import date
 
 # My camping location
@@ -34,6 +34,17 @@ def get_forecast(lat, lon):
         "daily": "temperature_2m_max,temperature_2m_min",
         "timezone": "America/Los_Angeles",
         "forecast_days": 7
+    }
+    response = requests.get(url, params=params, timeout=120)
+    return response.json()
+
+def get_current_weather(lat, lon):
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "current": "temperature_2m",
+        "timezone": "America/Los_Angeles"
     }
     response = requests.get(url, params=params, timeout=120)
     return response.json()
@@ -72,28 +83,32 @@ forecast_df = pd.DataFrame({
     "max_temp": forecast_data["daily"]["temperature_2m_max"],
     "min_temp": forecast_data["daily"]["temperature_2m_min"]
 })
-#What is the temperature right now at this latitude and longitude?”
-def get_current_weather(lat, lon):
-    url = "https://api.open-meteo.com/v1/forecast"
-    params = {
-        "latitude": lat,
-        "longitude": lon,
-        "current": "temperature_2m",
-        "timezone": "America/Los_Angeles"
-    }
-    response = requests.get(url, params=params, timeout=120)
-    return response.json()
+# Save to CSV
+historical_df.to_csv("historical_weather.csv", index=False)
+forecast_df.to_csv("forecast_weather.csv", index=False)
+print("\nData saved to CSV files.")
 
+# Get the current temperature and time
+current_data = get_current_weather(LATITUDE, LONGITUDE)
+current_temp = current_data["current"]["temperature_2m"]
+current_time = current_data["current"]["time"]
+
+# Append the current reading to the log
+log_df = pd.DataFrame({
+    "date": [str(today)],
+    "time": [current_time],
+    "temperature_2m": [current_temp]
+})
+
+log_file = "daily_log.csv"
 log_df.to_csv(
-    "daily_log.csv",
+    log_file,
     mode="a",
-    header=not os.path.isfile("daily_log.csv"),
+    header=not os.path.isfile(log_file),
     index=False
 )
-log_file = "daily_log.csv"
-log_df.to_csv(log_file, mode="a", header=not os.path.isfile(log_file), index=False)
-print(f"Logged current temperature: {current_temp} degrees C at {current_time}")
 
+print(f"Logged current temperature: {current_temp} degrees C at {current_time}")
 # Results
 print(f"Weather analysis for {LOCATION_NAME}")
 print("=" * 40)
