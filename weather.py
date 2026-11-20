@@ -71,6 +71,7 @@ forecast_df = pd.DataFrame({
     "max_temp": forecast_data["daily"]["temperature_2m_max"],
     "min_temp": forecast_data["daily"]["temperature_2m_min"]
 })
+#What is the temperature right now at this latitude and longitude?”
 def get_current_weather(lat, lon):
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
