@@ -71,7 +71,16 @@ forecast_df = pd.DataFrame({
     "max_temp": forecast_data["daily"]["temperature_2m_max"],
     "min_temp": forecast_data["daily"]["temperature_2m_min"]
 })
-
+def get_current_weather(lat, lon):
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "current": "temperature_2m",
+        "timezone": "America/Los_Angeles"
+    }
+    response = requests.get(url, params=params, timeout=120)
+    return response.json()
 # Results
 print(f"Weather analysis for {LOCATION_NAME}")
 print("=" * 40)
